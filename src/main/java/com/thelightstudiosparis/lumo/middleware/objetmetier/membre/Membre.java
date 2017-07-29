@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -121,7 +122,7 @@ public class Membre implements Serializable {
 		this.photo = photo;
 	}
 	
-	@ManyToMany(mappedBy = "listeMembres" )
+	@ManyToMany(mappedBy = "listeMembres")
 	public List<Profession> getListeProfessions() {
 		return listeProfessions;
 	}
@@ -130,7 +131,7 @@ public class Membre implements Serializable {
 		this.listeProfessions = listeProfessions;
 	}
 	
-	@ManyToMany (mappedBy = "listeMembres" )
+	@ManyToMany (mappedBy = "listeMembres")
 	public List<Departement> getListeDepartements() {
 		return listeDepartements;
 	}

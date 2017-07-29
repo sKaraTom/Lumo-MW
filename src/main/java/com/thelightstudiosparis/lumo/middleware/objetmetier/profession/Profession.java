@@ -3,6 +3,7 @@ package com.thelightstudiosparis.lumo.middleware.objetmetier.profession;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -62,7 +63,7 @@ public class Profession implements Serializable {
 		this.metier = metier;
 	}
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name="TJ_PRO_MEM")
 	public List<Membre> getListeMembres() {
 		return listeMembres;

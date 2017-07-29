@@ -3,6 +3,7 @@ package com.thelightstudiosparis.lumo.middleware.objetmetier.departement;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,7 +24,7 @@ import com.thelightstudiosparis.lumo.middleware.objetmetier.membre.Membre;
 @Table(name = "T_DEPARTEMENT")
 public class Departement implements Serializable {
 		
-	private Integer numero;
+	private String numero;
 	private String nom;
 	
 	private List<Membre> listeMembres;
@@ -32,7 +33,7 @@ public class Departement implements Serializable {
 		super();
 	}
 
-	public Departement(Integer numero, String nom, List<Membre> listeMembres) {
+	public Departement(String numero, String nom, List<Membre> listeMembres) {
 		super();
 		this.numero = numero;
 		this.nom = nom;
@@ -41,11 +42,11 @@ public class Departement implements Serializable {
 	
 	@Id
 	@Column(name = "DEP_ID")
-	public Integer getNumero() {
+	public String getNumero() {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	public void setNumero(String numero) {
 		this.numero = numero;
 	}
 	
@@ -58,7 +59,7 @@ public class Departement implements Serializable {
 		this.nom = nom;
 	}
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name="TJ_DEP_MEM")
 	public List<Membre> getListeMembres() {
 		return listeMembres;
