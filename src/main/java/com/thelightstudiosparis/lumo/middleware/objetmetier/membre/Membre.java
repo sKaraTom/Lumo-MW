@@ -25,6 +25,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.departement.Departement;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.profession.Profession;
 
@@ -32,6 +34,7 @@ import com.thelightstudiosparis.lumo.middleware.objetmetier.profession.Professio
 @XmlRootElement
 @Entity
 @Table(name = "T_MEMBRE")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="uuid")
 public class Membre implements Serializable {
 
 	private UUID uuid;
@@ -122,7 +125,7 @@ public class Membre implements Serializable {
 		this.photo = photo;
 	}
 	
-	@ManyToMany(mappedBy = "listeMembres")
+	@ManyToMany(mappedBy = "listeMembres", cascade={ CascadeType.MERGE })
 	public List<Profession> getListeProfessions() {
 		return listeProfessions;
 	}
@@ -131,7 +134,7 @@ public class Membre implements Serializable {
 		this.listeProfessions = listeProfessions;
 	}
 	
-	@ManyToMany (mappedBy = "listeMembres")
+	@ManyToMany (mappedBy = "listeMembres", cascade={ CascadeType.MERGE })
 	public List<Departement> getListeDepartements() {
 		return listeDepartements;
 	}
@@ -216,7 +219,7 @@ public class Membre implements Serializable {
 				.append("Url", this.urlSite)
 				.append("Photo", this.photo)
 				.append("Professions", this.listeProfessions)
-				.append("Localisation", this.listeDepartements)
+				.append("Départements", this.listeDepartements)
 				.append("Popularite", this.compteurPopularite)
 				.append("Votes", this.listeVotes)
 				.append("Favoris", this.listeFavoris)

@@ -17,7 +17,9 @@ import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.Compte;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteExistantException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteInvalideException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.EmailInvalideException;
+import com.thelightstudiosparis.lumo.middleware.objetmetier.departement.DepartementIntrouvableException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.membre.MembreInvalideException;
+import com.thelightstudiosparis.lumo.middleware.objetmetier.profession.ProfessionIntrouvableException;
 import com.thelightstudiosparis.lumo.middleware.service.CompteService;
 
 
@@ -55,6 +57,12 @@ public class CompteRS {
 			builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage());
 
 		} catch (MembreInvalideException e) {
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage());
+			
+		} catch (DepartementIntrouvableException e) {
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage());
+		
+		} catch (ProfessionIntrouvableException e) {
 			builder = Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage());
 		}
 		

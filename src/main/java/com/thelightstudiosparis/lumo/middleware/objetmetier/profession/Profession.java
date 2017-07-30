@@ -11,20 +11,30 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.membre.Membre;
 
 
 @XmlRootElement
 @Entity
+@NamedQueries({
+	@NamedQuery(name="Profession.obtenirToutesProfessions",
+	query = "SELECT p FROM Profession p")
+})
 @Table(name = "T_PROFESSION")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Profession implements Serializable {
 	
 	Integer id;
@@ -40,7 +50,7 @@ public class Profession implements Serializable {
 		super();
 		this.id = id;
 		this.metier = metier;
-		listeMembres = listeMembres;
+		this.listeMembres = listeMembres;
 	}
 	
 	@Id
@@ -63,14 +73,15 @@ public class Profession implements Serializable {
 		this.metier = metier;
 	}
 	
-	@ManyToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade={ CascadeType.PERSIST,CascadeType.MERGE })
 	@JoinTable(name="TJ_PRO_MEM")
+	@XmlTransient
 	public List<Membre> getListeMembres() {
 		return listeMembres;
 	}
 
 	public void setListeMembres(List<Membre> listeMembres) {
-		listeMembres = listeMembres;
+		this.listeMembres = listeMembres;
 	}
 	
 	@Override

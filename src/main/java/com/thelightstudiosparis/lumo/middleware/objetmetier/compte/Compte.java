@@ -22,11 +22,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.membre.Membre;
 
 @XmlRootElement
 @Entity
 @Table(name = "T_COMPTE")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Compte  implements Serializable {
 
 	

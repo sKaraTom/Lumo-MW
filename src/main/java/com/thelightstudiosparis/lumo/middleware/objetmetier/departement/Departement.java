@@ -9,22 +9,34 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import com.thelightstudiosparis.lumo.middleware.objetmetier.membre.Membre;
 
 @XmlRootElement
 @Entity
+@NamedQueries({
+	@NamedQuery(name="Departement.obtenirTousDepartements",
+	query = "SELECT d FROM Departement d")
+	
+})
 @Table(name = "T_DEPARTEMENT")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="numero")
 public class Departement implements Serializable {
 		
-	private String numero;
+	private String numero; // String en raison de la Corse : 2a 2b
 	private String nom;
 	
 	private List<Membre> listeMembres;
@@ -59,8 +71,9 @@ public class Departement implements Serializable {
 		this.nom = nom;
 	}
 	
-	@ManyToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade={ CascadeType.PERSIST,CascadeType.MERGE })
 	@JoinTable(name="TJ_DEP_MEM")
+	@XmlTransient
 	public List<Membre> getListeMembres() {
 		return listeMembres;
 	}

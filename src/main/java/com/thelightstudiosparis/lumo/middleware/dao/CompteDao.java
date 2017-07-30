@@ -1,9 +1,12 @@
 package com.thelightstudiosparis.lumo.middleware.dao;
 
 import javax.ejb.Stateless;
+import javax.mail.internet.InternetAddress;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -46,9 +49,32 @@ public class CompteDao {
 			throw new CompteInvalideException();
 		}
 	}
+	
+	
+	
 
-
-
+	/**
+	 * vérifier qu'un compte n'existe pas avec le même email.
+	 * 
+	 * @param compteAVerifier
+	 * @return
+	 */
+	public Boolean contenirCompte(final Compte compteAVerifier) {
+		
+		final String requeteJPQL = "SELECT c.email FROM Compte c WHERE c.email=:email";
+		final Query requete = em.createQuery(requeteJPQL);
+		requete.setParameter("email", compteAVerifier.getEmail());
+		
+		try {
+			InternetAddress resultat = (InternetAddress) requete.getSingleResult();
+			return true;
+		}
+		
+		catch(NoResultException e) {
+			return false;
+		}
+		
+	}
 
 
 
