@@ -47,16 +47,16 @@ public class ProfessionDao {
 		
 		final String requeteJPQL = "Profession.obtenirToutesProfessions";
 		 
-		 final Query requete = em.createNamedQuery(requeteJPQL);
+		final Query requete = em.createNamedQuery(requeteJPQL);
 		 
-		 List<Profession> listeProfessions;
+		List<Profession> listeProfessions;
 		 
-		 try {
+		try {
 			 listeProfessions = requete.getResultList();
-			} 
-			catch(Exception e) {
+		} 
+		catch(Exception e) {
 				throw new DaoException("échec à l'obtention des professions depuis la base de données.");
-			}
+		}
 		
 		return listeProfessions;
 	}

@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import com.thelightstudiosparis.lumo.middleware.objetmetier.departement.Departement;
@@ -39,7 +40,7 @@ public class DepartementDao {
 	}
 	
 	/**
-	 * obtenir tous les départements de la table.
+	 * obtenir une liste de tous les départements de la table.
 	 * 
 	 * @return List<Departement>
 	 * @throws DaoException 
@@ -48,7 +49,7 @@ public class DepartementDao {
 		
 	 final String requeteJPQL = "Departement.obtenirTousDepartements";
 	 
-	 final Query requete = em.createNamedQuery(requeteJPQL);
+	 final TypedQuery<Departement> requete = em.createNamedQuery(requeteJPQL, Departement.class);
 	 
 	 List<Departement> listeDepartements;
 	 

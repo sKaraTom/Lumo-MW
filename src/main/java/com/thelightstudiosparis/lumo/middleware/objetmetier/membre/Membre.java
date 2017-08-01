@@ -3,6 +3,7 @@ package com.thelightstudiosparis.lumo.middleware.objetmetier.membre;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Basic;
@@ -11,6 +12,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,6 +25,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -34,7 +38,7 @@ import com.thelightstudiosparis.lumo.middleware.objetmetier.profession.Professio
 @XmlRootElement
 @Entity
 @Table(name = "T_MEMBRE")
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="uuid")
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="uuid")
 public class Membre implements Serializable {
 
 	private UUID uuid;
@@ -125,7 +129,8 @@ public class Membre implements Serializable {
 		this.photo = photo;
 	}
 	
-	@ManyToMany(mappedBy = "listeMembres", cascade={ CascadeType.MERGE })
+	@ManyToMany(mappedBy = "listeMembres", cascade={ CascadeType.MERGE }, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	public List<Profession> getListeProfessions() {
 		return listeProfessions;
 	}
@@ -134,7 +139,8 @@ public class Membre implements Serializable {
 		this.listeProfessions = listeProfessions;
 	}
 	
-	@ManyToMany (mappedBy = "listeMembres", cascade={ CascadeType.MERGE })
+	@ManyToMany (mappedBy = "listeMembres", cascade={ CascadeType.MERGE }, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	public List<Departement> getListeDepartements() {
 		return listeDepartements;
 	}

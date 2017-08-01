@@ -21,6 +21,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -76,6 +78,7 @@ public class Profession implements Serializable {
 	@ManyToMany(cascade={ CascadeType.PERSIST,CascadeType.MERGE })
 	@JoinTable(name="TJ_PRO_MEM")
 	@XmlTransient
+	@Fetch(value = FetchMode.SUBSELECT)
 	public List<Membre> getListeMembres() {
 		return listeMembres;
 	}
