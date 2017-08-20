@@ -2,6 +2,7 @@ package com.thelightstudiosparis.lumo.middleware.service;
 
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -104,12 +105,8 @@ public class CompteService {
 		if (StringUtils.isBlank(compte.getPassword()))
 			throw new CompteInvalideException("Le mot de passe du compte ne peut valoir null/blanc.");
 		
-		try {
-			compte.getEmail().validate();
-			
-		} catch (AddressException emailInvalideException) {
-			throw new EmailInvalideException("l'email saisi doit être valide.");
-		}
+		// vérifier que l'email est valide.
+		this.validerEmail(compte.getEmail());
 		
 		// vérifier si un compte existe déjà à cet email.
 		Boolean compteExistant = compteDao.contenirCompte(compte);
@@ -117,7 +114,6 @@ public class CompteService {
 		if(compteExistant) {
 			throw new CompteExistantException("un compte existe déjà pour cet email.");
 		}
-		
 		
 	}
 	
@@ -129,6 +125,25 @@ public class CompteService {
 		
 		// validation de tous les champs à ajouter.
 		
+	}
+	
+	/** 
+	 * regex de validation du mail.
+	 * 
+	 * @param email
+	 * @throws EmailInvalideException
+	 */
+	private void validerEmail(final String email) throws EmailInvalideException {
+		
+		if (StringUtils.isBlank(email)) {
+			throw new EmailInvalideException("l'email ne peut être vide.");
+		}
+		
+		Boolean emailValide = Pattern.matches("^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)+$", email);
+		
+		if(!emailValide) {
+			throw new EmailInvalideException("vous devez saisir un email valide.");
+		}
 	}
 	
 	

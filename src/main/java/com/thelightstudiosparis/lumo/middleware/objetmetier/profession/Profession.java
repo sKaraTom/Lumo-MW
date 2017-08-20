@@ -33,7 +33,7 @@ import com.thelightstudiosparis.lumo.middleware.objetmetier.membre.Membre;
 @Entity
 @NamedQueries({
 	@NamedQuery(name="Profession.obtenirToutesProfessions",
-	query = "SELECT p FROM Profession p")
+	query = "SELECT p FROM Profession p ORDER BY p.metier")
 })
 @Table(name = "T_PROFESSION")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")

@@ -3,7 +3,6 @@ package com.thelightstudiosparis.lumo.middleware.objetmetier.compte;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import javax.mail.internet.InternetAddress;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +34,7 @@ public class Compte  implements Serializable {
 	
 	private Integer id;
 	
-	private InternetAddress email;
+	private String email;
 	
 	private String password;
 	
@@ -47,7 +46,7 @@ public class Compte  implements Serializable {
 		super();
 	}
 
-	public Compte(Integer id, InternetAddress email, String password, Calendar dateDeCreation, Membre membre) {
+	public Compte(Integer id, String email, String password, Calendar dateDeCreation, Membre membre) {
 		super();
 		this.id = id;
 		this.email = email;
@@ -68,11 +67,11 @@ public class Compte  implements Serializable {
 	}
 	
 	@Column(name = "COM_EMAIL")
-	public InternetAddress getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(InternetAddress email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 	

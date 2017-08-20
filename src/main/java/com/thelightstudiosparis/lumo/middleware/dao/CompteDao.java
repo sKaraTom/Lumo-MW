@@ -66,7 +66,7 @@ public class CompteDao {
 		requete.setParameter("email", compteAVerifier.getEmail());
 		
 		try {
-			InternetAddress resultat = (InternetAddress) requete.getSingleResult();
+			String resultat = (String) requete.getSingleResult();
 			return true;
 		}
 		

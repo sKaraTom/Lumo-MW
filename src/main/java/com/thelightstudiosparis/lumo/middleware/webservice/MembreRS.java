@@ -79,16 +79,16 @@ public class MembreRS {
 		}
 		
 		else {	
-		// utilisation de la bibliothèque JSONIC
-		// pour transformer en json la liste de membres
-		// et mieux maîtriser les sous-niveaux de la liste (liste de membres contenant une liste de départements et professions).
-		final JSON json = new JSON(4);
-		json.setPrettyPrint(true);
-		json.setMode(Mode.STRICT);
-		
-		final String listeMembresJson = json.format(listeMembres);
-		
-		builder = Response.ok(listeMembresJson);
+			// utilisation de la bibliothèque JSONIC
+			// pour transformer en json la liste de membres
+			// et mieux maîtriser les sous-niveaux de la liste (liste de membres contenant une liste de départements et professions).
+			final JSON json = new JSON(4);
+			json.setPrettyPrint(true);
+			json.setMode(Mode.STRICT);
+			
+			final String listeMembresJson = json.format(listeMembres);
+			
+			builder = Response.ok(listeMembresJson);
 		}
 		
         return builder.build();
