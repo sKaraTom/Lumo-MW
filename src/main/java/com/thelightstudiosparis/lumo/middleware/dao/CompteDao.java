@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.Compte;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteExistantException;
+import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteIntrouvableException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteInvalideException;
 
 
@@ -50,7 +51,35 @@ public class CompteDao {
 		}
 	}
 	
-	
+	/**
+	 * obtenir un compte par son mail
+	 * 
+	 * @param email
+	 * @return le compte associé
+	 * @throws CompteIntrouvableException si aucun compte trouvé
+	 * @throws DaoException pour toute autre exception levée
+	 */
+	public Compte obtenirCompte(final String email) throws CompteIntrouvableException, DaoException {
+		
+		final String requeteJPQL = "Compte.obtenirCompte";
+		final Query requete = em.createNamedQuery(requeteJPQL);
+		requete.setParameter("email", email);
+		
+		Compte compte;
+		
+		try {
+			compte = (Compte) requete.getSingleResult();
+		}
+		catch(NoResultException e) {
+			throw new CompteIntrouvableException("Aucun compte existant pour cet email.");
+		}
+		catch(Exception e) {
+			throw new DaoException("un problème est survenu à l'obtention du compte depuis la base de données.");
+		}
+		
+		return compte;
+
+	}
 	
 
 	/**
@@ -58,11 +87,12 @@ public class CompteDao {
 	 * 
 	 * @param compteAVerifier
 	 * @return
+	 * @throws DaoException 
 	 */
-	public Boolean contenirCompte(final Compte compteAVerifier) {
+	public Boolean contenirCompte(final Compte compteAVerifier) throws DaoException {
 		
-		final String requeteJPQL = "SELECT c.email FROM Compte c WHERE c.email=:email";
-		final Query requete = em.createQuery(requeteJPQL);
+		final String requeteJPQL = "Compte.contenirCompte";
+		final Query requete = em.createNamedQuery(requeteJPQL);
 		requete.setParameter("email", compteAVerifier.getEmail());
 		
 		try {
@@ -72,6 +102,10 @@ public class CompteDao {
 		
 		catch(NoResultException e) {
 			return false;
+		}
+		
+		catch(Exception e) {
+			throw new DaoException("la vérification de l'existence du compte dans la base de données a échoué.");
 		}
 		
 	}

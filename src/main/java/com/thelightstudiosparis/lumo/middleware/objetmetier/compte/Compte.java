@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,6 +30,11 @@ import com.thelightstudiosparis.lumo.middleware.objetmetier.membre.Membre;
 @XmlRootElement
 @Entity
 @Table(name = "T_COMPTE")
+@NamedQueries({
+	@NamedQuery(name="Compte.contenirCompte",query = "SELECT c.email FROM Compte c WHERE c.email=:email"),
+	@NamedQuery(name="Compte.obtenirCompte",query = "SELECT c FROM Compte c WHERE c.email=:email")
+	
+})
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Compte  implements Serializable {
 

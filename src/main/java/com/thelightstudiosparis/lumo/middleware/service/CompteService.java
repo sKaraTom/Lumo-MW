@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thelightstudiosparis.lumo.middleware.dao.CompteDao;
+import com.thelightstudiosparis.lumo.middleware.dao.DaoException;
 import com.thelightstudiosparis.lumo.middleware.dao.DepartementDao;
 import com.thelightstudiosparis.lumo.middleware.dao.ProfessionDao;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.Compte;
@@ -58,10 +59,11 @@ public class CompteService {
 	 * @throws MembreInvalideException
 	 * @throws DepartementIntrouvableException
 	 * @throws ProfessionIntrouvableException
+	 * @throws DaoException si la vérification qu'un compte existe a échoué côté base de données.
 	 */
 	public void creerCompte(final Compte compte) 
 			throws CompteInvalideException, CompteExistantException, EmailInvalideException,
-			MembreInvalideException, DepartementIntrouvableException, ProfessionIntrouvableException {
+			MembreInvalideException, DepartementIntrouvableException, ProfessionIntrouvableException, DaoException {
 		
 		this.validerCompte(compte);
 		
@@ -96,8 +98,9 @@ public class CompteService {
 	 * @throws CompteInvalideException si le compte est null ou password blank.
 	 * @throws EmailInvalideException si l'email n'est pas formaté correctement.
 	 * @throws CompteExistantException si un compte existe déjà pour cet email.
+	 * @throws DaoException 
 	 */
-	private void validerCompte(final Compte compte) throws CompteInvalideException, EmailInvalideException, CompteExistantException {
+	private void validerCompte(final Compte compte) throws CompteInvalideException, EmailInvalideException, CompteExistantException, DaoException {
 		
 		if (Objects.isNull(compte))
 			throw new CompteInvalideException("Le compte ne peut être null.");

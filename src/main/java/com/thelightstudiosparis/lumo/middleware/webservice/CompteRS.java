@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thelightstudiosparis.lumo.middleware.dao.DaoException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.Compte;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteExistantException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteInvalideException;
@@ -64,6 +65,9 @@ public class CompteRS {
 		
 		} catch (ProfessionIntrouvableException e) {
 			builder = Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage());
+			
+		} catch (DaoException e) {
+			builder = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage());
 		}
 		
         return builder.build();
