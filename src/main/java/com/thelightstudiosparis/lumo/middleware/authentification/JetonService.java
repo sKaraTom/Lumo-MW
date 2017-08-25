@@ -52,11 +52,21 @@ public class JetonService {
 		return token;	
 	}
 	
-	
+	/**
+	 * méthode de validation d'un token.
+	 * 
+	 * @param token
+	 * @throws ExpiredJwtException si la date d'expiration est passée.
+	 * @throws UnsupportedJwtException
+	 * @throws MalformedJwtException
+	 * @throws SignatureException
+	 * @throws IllegalArgumentException
+	 * @throws UnsupportedEncodingException
+	 */
 	public void validerToken(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException,
 	SignatureException, IllegalArgumentException, UnsupportedEncodingException {
 		
-	 // valider le token
+	 
 		Jws<Claims> jws = Jwts.parser().setSigningKey(clef.getBytes("UTF-8")).parseClaimsJws(token);
 
 	}

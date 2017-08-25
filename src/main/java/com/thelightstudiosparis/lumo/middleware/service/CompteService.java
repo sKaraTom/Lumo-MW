@@ -1,7 +1,9 @@
 package com.thelightstudiosparis.lumo.middleware.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
@@ -13,12 +15,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thelightstudiosparis.lumo.middleware.authentification.Jeton;
+import com.thelightstudiosparis.lumo.middleware.authentification.JetonService;
 import com.thelightstudiosparis.lumo.middleware.dao.CompteDao;
 import com.thelightstudiosparis.lumo.middleware.dao.DaoException;
 import com.thelightstudiosparis.lumo.middleware.dao.DepartementDao;
 import com.thelightstudiosparis.lumo.middleware.dao.ProfessionDao;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.Compte;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteExistantException;
+import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteIntrouvableException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteInvalideException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.EmailInvalideException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.departement.Departement;
@@ -43,6 +48,9 @@ public class CompteService {
 	
 	@EJB
 	private ProfessionDao professionDao;
+	
+	@EJB
+	private JetonService jetonService;
 	
 	private static final Logger LOGGER =
 			LoggerFactory.getLogger(CompteService.class);
@@ -90,6 +98,44 @@ public class CompteService {
 		// persister le compte (ce qui persiste les modifs en cascade).
 		compteDao.creerCompte(compte);
 	}
+	
+	/**
+	 * connecter un compte : vérifier son email et mot de passe.
+	 * 
+	 * @param compte le compte contenant les crédentiels.
+	 * @return un objet Jeton
+	 * @throws CompteIntrouvableException si aucun compte n'existe pour cet email.
+	 * @throws DaoException si problème entre l'orm et la bdd.
+	 * @throws CompteInvalideException si la validation des crédentiels échoue.
+	 * @throws UnsupportedEncodingException
+	 */
+	public Jeton connecterCompte(Compte compte) 
+			throws CompteIntrouvableException, DaoException, CompteInvalideException, UnsupportedEncodingException {
+		
+		String email = compte.getEmail();
+		String password = compte.getPassword();
+		
+		Compte compteDeReference = compteDao.obtenirCompte(email);
+		
+		Jeton jeton = null;
+		
+		if(compteDeReference.getPassword().equals(password) && compteDeReference.getEmail().equals(email)) {
+			
+			Membre membre = compteDeReference.getMembre();
+			String token = jetonService.creerToken(membre);
+			
+			// je crée un jeton contenant l'uuid du membre, son prénom et un token d'authentification.
+			jeton = new Jeton(membre.getUuid(), membre.getPrenom(), token);
+		}
+		
+		else{
+			throw new CompteInvalideException("email ou mot de passe invalide.");
+		}
+		
+		return jeton;
+	}
+	
+	
 	
 	/**
 	 * valider le compte : non null, password non blank, email valide, et email unique.
@@ -142,7 +188,7 @@ public class CompteService {
 			throw new EmailInvalideException("l'email ne peut être vide.");
 		}
 		
-		Boolean emailValide = Pattern.matches("^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)+$", email);
+		Boolean emailValide = Pattern.matches("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", email);
 		
 		if(!emailValide) {
 			throw new EmailInvalideException("vous devez saisir un email valide.");

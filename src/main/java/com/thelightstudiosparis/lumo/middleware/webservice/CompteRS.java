@@ -1,5 +1,7 @@
 package com.thelightstudiosparis.lumo.middleware.webservice;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.ejb.EJB;
 import javax.jws.WebService;
 import javax.transaction.Transactional;
@@ -13,9 +15,11 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thelightstudiosparis.lumo.middleware.authentification.Jeton;
 import com.thelightstudiosparis.lumo.middleware.dao.DaoException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.Compte;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteExistantException;
+import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteIntrouvableException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.CompteInvalideException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.compte.EmailInvalideException;
 import com.thelightstudiosparis.lumo.middleware.objetmetier.departement.DepartementIntrouvableException;
@@ -72,6 +76,37 @@ public class CompteRS {
 		
         return builder.build();
 	}
+	
+	
+	@POST
+	@Path("/connexion")
+    @Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response connecterCompte (Compte compte) {
+		
+		Response.ResponseBuilder builder = null;
+		Jeton jeton;
+
+		try {
+			jeton = compteService.connecterCompte(compte);
+			builder = Response.ok(jeton);
+		
+		} catch (UnsupportedEncodingException e) {
+			builder = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("problème d'encodage à la création du token.");
+
+		} catch (CompteIntrouvableException e) {
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage());
+			
+		} catch (DaoException e) {
+			builder = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage());
+					
+		} catch (CompteInvalideException e) {
+			builder = Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage());
+		}
+		
+        return builder.build();
+	}
+	
 	
 	
 }
