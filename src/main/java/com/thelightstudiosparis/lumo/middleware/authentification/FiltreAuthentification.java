@@ -50,11 +50,13 @@ public class FiltreAuthentification implements ContainerRequestFilter {
         // pour toute autre exception : code 401
         try {	
         	jetonService.validerToken(token);
+        	
         } catch (ExpiredJwtException e) {
         	requestContext.abortWith(
-	                Response.status(Response.Status.BAD_REQUEST).entity("la session a expiré, veuillez vous reconnecter.").build());
+                Response.status(Response.Status.BAD_REQUEST).entity("la session a expiré, veuillez vous reconnecter.").build());
+        	
         } catch (Exception e) {
-           // n'importe quelle exception annule la connexion côté ihm.
+           // n'importe quelle autre exception annule la connexion côté ihm.
         	requestContext.abortWith(
                 Response.status(Response.Status.UNAUTHORIZED).build());
         }
